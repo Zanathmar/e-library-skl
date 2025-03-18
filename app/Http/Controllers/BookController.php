@@ -10,10 +10,30 @@ use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $books = Book::latest()->paginate(10);
+        
+        if ($request->has('query')) {
+            $query = $request->input('query');
+            $books = Book::where('title', 'LIKE', "%{$query}%")
+                ->orWhere('author', 'LIKE', "%{$query}%")
+                ->latest()
+                ->paginate(10);
+        }
+
         return view("books.index", compact("books"));
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $books = Book::where('title', 'LIKE', "%{$query}%")
+            ->orWhere('author', 'LIKE', "%{$query}%")
+            ->latest()
+            ->paginate(10);
+        
+        return view('books.index', compact('books'));
     }
 
     public function create()
@@ -31,10 +51,10 @@ class BookController extends Controller
             "published_year" => "required|numeric|digits:4",
             "image" => "required|image|mimes:jpeg,png,jpg,gif,svg|max:2048",
         ],[
-            "title.required" => "JUDUL GAK OLEH KOSONG",
-            "title.unique" => "JUDUL SUDAH ADA",
-            "published_year.digits" => "TAHUN TERLALU PANJANG",
-            "image.max" => "UKURAN GAMBAR TERLALU BESAR",
+            "title.required" => "Title cannot be empty",
+            "title.unique" => "Title already exists",
+            "published_year.digits" => "Year must be between",
+            "image.max" => "File is too large",
         ]);
 
         try {
@@ -48,15 +68,15 @@ class BookController extends Controller
 
             $slugTitle = Str::slug($request->title);
 
-            // $book = new Book();
-            // $book->title = $request->title;
-            // $book->slug = $slugTitle;
-            // $book->description = $request->description;
-            // $book->page_count = $request->page_count;
-            // $book->author = $request->author;
-            // $book->published_year = $request->published_year;
-            // $book->image = $renamedImage;
-            // $book->save();
+            $book = new Book();
+            $book->title = $request->title;
+            $book->slug = $slugTitle;
+            $book->description = $request->description;
+            $book->page_count = $request->page_count;
+            $book->author = $request->author;
+            $book->published_year = $request->published_year;
+            $book->image = $renamedImage;
+            $book->save();
 
             $book = Book::create([
                 "title"=> $request->title,
@@ -172,6 +192,6 @@ class BookController extends Controller
             return redirect()->route("book.index")->with("success", "Book deleted successfully");
         }
 
-        return redirect()->back()->with("error","Book not found");
+        return redirect()->back()->with("error","BOOk nornbook not found");
     }
 }

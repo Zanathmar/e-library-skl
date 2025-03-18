@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,9 @@ Route::middleware(['auth'])->name('dashboard.')->group(function () {
 
 // Borrow Routes
 Route::middleware(['auth'])->name('borrow.')->group(function () {
-    Route::post('/borrow/{id}', [DashboardController::class,'request'])->name('request');
+    Route::post('/borrow/{id}', [BorrowController::class,'request'])->name('request');
+    Route::patch('/borrow/accept', [BorrowController::class, 'accept'])->name('accept');
+    Route::patch('/borrow/reject', [BorrowController::class,'reject'])->name('reject');
 });
 
 // Auth Routes

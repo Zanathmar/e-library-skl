@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Borrow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,4 +38,40 @@ class BorrowController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+    public function accept(Request $request)
+    {
+     $request->validate([
+        'id' => "required|exists:borrows,id",
+     ]);
+
+     try {
+        $borrow = Borrow::find($request->id);
+        $borrow -> update([
+            'status' => 'borrowed',
+        ]);
+        return redirect()->route('dashboard.index')->with('success','Book request accepted');
+    
+         } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
+         }
+    }
+
+    public function reject(Request $request)
+    {
+     $request->validate([
+        'id' => "required|exists:borrows,id",
+     ]);
+
+     try {
+        $borrow = Borrow::find($request->id);
+        $borrow -> update([
+            'status' => 'rejected',
+        ]);
+        return redirect()->route('dashboard.index')->with('success','Book request rejected');
+    
+         } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
+         }
+    }
 }
+
