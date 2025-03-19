@@ -32,6 +32,7 @@ Route::middleware(['auth'])->name('borrow.')->group(function () {
     Route::post('/borrow/{id}', [BorrowController::class,'request'])->name('request');
     Route::patch('/borrow/accept', [BorrowController::class, 'accept'])->name('accept');
     Route::patch('/borrow/reject', [BorrowController::class,'reject'])->name('reject');
+    Route::patch('/borrow/return', [BorrowController::class,'return'])->name('return'); // Tambahkan route ini
 });
 
 // Auth Routes

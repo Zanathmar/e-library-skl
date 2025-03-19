@@ -13,13 +13,35 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create or update admin user
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin Izzan',
+                'password' => bcrypt('12345678'),
+                'role' => 'admin'
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Admin Izzan',
-            'email' => 'admin@gmail.com',
-            'password'=> bcrypt('12345678'),
-            'role' => 'admin'
+        // Create or update test user
+        User::updateOrCreate(
+            ['email' => 'izzanathmar.m@gmail.com'],
+            [
+                'name' => 'Izzan',
+                'password' => bcrypt('12345678'),
+                'role' => 'user'
+            ]
+        );
+
+        // Create additional test users with unique emails
+        User::factory()->count(8)->create([
+            'role' => 'user'
+        ]);
+
+        // Run other seeders
+        $this->call([
+            BookSeeder::class,
+            // Add other seeders here
         ]);
     }
 }

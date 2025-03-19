@@ -73,5 +73,28 @@ class BorrowController extends Controller
         return redirect()->back()->with('error', $e->getMessage());
          }
     }
+
+    public function return(Request $request)
+{
+    $request->validate([
+        'id' => "required|exists:borrows,id",
+    ]);
+
+    try {
+        $borrow = Borrow::find($request->id);
+        $borrow->update([
+            'status' => 'returned',
+            'returned_at' => now(),
+        ]);
+        
+        // Set book status back to available
+        $book = Book::find($borrow->book_id);
+        $book->update(['status' => 'available']);
+        
+        return redirect()->route('dashboard.index')->with('success', 'Book has been returned successfully');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
+    }
+}
 }
 

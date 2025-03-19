@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('page_count');
             $table->string('author');
             $table->year('published_year');
+            $table->string('category')->nullable();
             $table->string('image')->nullable();
             $table->integer('borrow_count')->default(0);
             $table->enum('status', ['available', 'unavailable'])->default('available');

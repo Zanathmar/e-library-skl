@@ -5,10 +5,10 @@
 @endsection
 
 @section('content')
-<section class="p-6 flex flex-col gap-6 max-w-screen mx-auto bg-background min-h-screen">
-    <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-text">Books</h1>
-        <a href="{{ route('book.create') }}" class="px-4 py-2 bg-primary border-2 border-black text-text rounded-full font-medium hover:bg-opacity-90 transition-colors shadow-[0_4px_0_0_#000000] hover:shadow-[0_2px_0_0_#86c0ae] hover:translate-y-0.5 active:translate-y-1 active:shadow-none flex items-center gap-2">
+<section class="p-8 flex flex-col gap-6 max-w-7xl mx-auto bg-background min-h-screen">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h1 class="text-4xl font-bold text-text tracking-tight">Books</h1>
+        <a href="{{ route('book.create') }}" class="px-5 py-2.5 bg-primary border-2 border-black text-text rounded-full font-medium hover:bg-opacity-90 transition-all duration-200 shadow-[0_4px_0_0_#000000] hover:shadow-[0_2px_0_0_#86c0ae] hover:translate-y-0.5 active:translate-y-1 active:shadow-none flex items-center gap-2 whitespace-nowrap">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
             </svg>
@@ -16,41 +16,52 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <!-- Search Bar -->
+    <div class="mb-6 relative">
+        <label for="search" class="sr-only">Search</label>
+        <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+            <input type="text" id="search" name="search" placeholder="Search by title or author..." class="pl-12 pr-4 py-3 bg-white w-full border-2 border-gray-200 text-text rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 transition-all shadow-sm">
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-primary text-text">
-                        <th class="p-3 text-left">#</th>
-                        <th class="p-3 text-left">Title</th>
-                        <th class="p-3 text-left">Cover</th>
-                        <th class="p-3 text-left">Author</th>
-                        <th class="p-3 text-left">Year</th>
-                        <th class="p-3 text-center">Actions</th>
+                        <th class="px-4 py-4 text-left font-semibold">#</th>
+                        <th class="px-4 py-4 text-left font-semibold">Title</th>
+                        <th class="px-4 py-4 text-left font-semibold">Cover</th>
+                        <th class="px-4 py-4 text-left font-semibold">Author</th>
+                        <th class="px-4 py-4 text-left font-semibold">Year</th>
+                        <th class="px-4 py-4 text-center font-semibold">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if ($books->count() === 0)
-                    <tr class="">
-                        <td colspan="6" class="p-3 text-center text-gray-500">No books found</td>
+                    <tr>
+                        <td colspan="6" class="p-6 text-center text-gray-500 font-medium">No books found</td>
                     </tr>
                     @endif
                     @foreach ($books as $book)
-                        <tr class="border-b border-gray-100 hover:bg-secondary hover:bg-opacity-20 transition-colors">
-                            <td class="p-3 text-text">{{ $books->perPage() * ($books->currentPage() - 1) + $loop->index + 1 }}</td>
-                            <td class="p-3 font-medium text-text">{{ $book->title }}</td>
-                            <td class="p-3">
-                                <img src="{{ asset("storage/book-images/" . $book->image) }}" alt="{{$book->title}}" class="w-16 h-24 object-cover rounded-md shadow-[2px_2px_0_0_rgba(0,0,0,0.1)]">
+                        <tr class="border-b border-gray-100 hover:bg-secondary hover:bg-opacity-10 transition-colors">
+                            <td class="px-4 py-4 text-text">{{ $books->perPage() * ($books->currentPage() - 1) + $loop->index + 1 }}</td>
+                            <td class="px-4 py-4 font-medium text-text">{{ $book->title }}</td>
+                            <td class="px-4 py-4">
+                                <img src="{{ asset("storage/book-images/" . $book->image) }}" alt="{{ $book->title }}" class="w-16 h-24 object-cover rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:rotate-1">
                             </td>
-                            <td class="p-3 text-text">{{ $book->author }}</td>
-                            <td class="p-3 text-text">{{ $book->published_year }}</td>
-                            <td class="p-3">
+                            <td class="px-4 py-4 text-text">{{ $book->author }}</td>
+                            <td class="px-4 py-4 text-text">{{ $book->published_year }}</td>
+                            <td class="px-4 py-4">
                                 <div class="flex gap-2 justify-center">
-                                    <a href="{{ route('dashboard.borrow', $book->slug) }}" class="px-3 py-1.5 bg-secondary border-2 border-black text-text rounded-full text-sm font-medium hover:bg-opacity-90 transition-colors shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none">Detail</a>
-                                    <a href="{{ route('book.edit', $book->id) }}" class="px-3 py-1.5 bg-primary border-2 border-black text-text rounded-full text-sm font-medium hover:bg-opacity-90 transition-colors shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none">Edit</a>
+                                    <a href="{{ route('book.show', $book->slug) }}" class="px-3 py-1.5 bg-secondary border-2 border-black text-text rounded-full text-sm font-medium hover:bg-opacity-90 transition-all duration-200 shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none">Detail</a>
+                                    <a href="{{ route('book.edit', $book->slug) }}" class="px-3 py-1.5 bg-primary border-2 border-black text-text rounded-full text-sm font-medium hover:bg-opacity-90 transition-all duration-200 shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none">Edit</a>
                                     <button 
                                         onclick="confirmDelete({{ $book->id }}, '{{ $book->title }}')" 
-                                        class="px-3 py-1.5 bg-red-500 border-2 border-black text-white rounded-full text-sm font-medium hover:bg-opacity-90 transition-colors shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none"
+                                        class="px-3 py-1.5 bg-red-500 border-2 border-black text-white rounded-full text-sm font-medium hover:bg-opacity-90 transition-all duration-200 shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none"
                                     >Delete</button>
                                 </div>
                             </td>
@@ -61,29 +72,29 @@
         </div>
     </div>
 
-    <div class="flex justify-center mt-4">
-        <div class="bg-white rounded-lg p-2 shadow-md">
-            <div class="flex items-center gap-2">
+    <div class="flex justify-center mt-6">
+        <div class="bg-white rounded-xl p-3 shadow-lg">
+            <div class="flex items-center gap-3">
                 @if ($books->onFirstPage())
-                    <span class="px-4 py-2 bg-gray-200 text-text opacity-50 rounded-full font-medium cursor-not-allowed">Previous</span>
+                    <span class="px-5 py-2 bg-gray-100 text-gray-400 rounded-full font-medium cursor-not-allowed">Previous</span>
                 @else
-                    <a href="{{ $books->previousPageUrl() }}" class="px-4 py-2 bg-primary text-text rounded-full font-medium shadow-[0_3px_0_0_#86c0ae] hover:shadow-[0_1px_0_0_#86c0ae] hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all">Previous</a>
+                    <a href="{{ $books->previousPageUrl() }}" class="px-5 py-2 bg-primary border-2 border-black text-text rounded-full font-medium shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all duration-200">Previous</a>
                 @endif
 
-                <div class="flex items-center gap-1">
+                <div class="flex items-center gap-2">
                     @for ($i = 1; $i <= $books->lastPage(); $i++)
                         @if ($i == $books->currentPage())
-                            <span class="w-8 h-8 flex items-center justify-center bg-primary text-text rounded-full font-medium shadow-[0_3px_0_0_#86c0ae]">{{ $i }}</span>
+                            <span class="w-10 h-10 flex items-center justify-center bg-primary  border-2 border-black text-text rounded-full font-medium shadow-[0_3px_0_0_#000000]">{{ $i }}</span>
                         @else
-                            <a href="{{ $books->url($i) }}" class="w-8 h-8 flex items-center justify-center bg-gray-100 text-text rounded-full font-medium hover:bg-gray-200 shadow-[0_2px_0_0_#d1d5db] hover:shadow-[0_1px_0_0_#d1d5db] hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all">{{ $i }}</a>
+                            <a href="{{ $books->url($i) }}" class="w-10 h-10 flex items-center justify-center bg-gray-100 text-text rounded-full font-medium hover:bg-gray-200 shadow-[0_2px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all duration-200">{{ $i }}</a>
                         @endif
                     @endfor
                 </div>
 
                 @if ($books->hasMorePages())
-                    <a href="{{ $books->nextPageUrl() }}" class="px-4 py-2 bg-primary text-text rounded-full font-medium shadow-[0_3px_0_0_#86c0ae] hover:shadow-[0_1px_0_0_#86c0ae] hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all">Next</a>
+                    <a href="{{ $books->nextPageUrl() }}" class="px-5 py-2 bg-primary border-2 border-black text-text rounded-full font-medium shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all duration-200">Next</a>
                 @else
-                    <span class="px-4 py-2 bg-gray-200 text-text opacity-50 rounded-full font-medium cursor-not-allowed">Next</span>
+                    <span class="px-5 py-2 bg-gray-100 text-gray-400 rounded-full font-medium cursor-not-allowed">Next</span>
                 @endif
             </div>
         </div>
@@ -91,14 +102,14 @@
 </section>
 
 <!-- Confirmation Modal for Delete -->
-<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
-        <h3 class="text-xl font-bold text-text mb-4">Confirm Deletion</h3>
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border-2 border-gray-100 transform transition-all">
+        <h3 class="text-2xl font-bold text-text mb-4">Confirm Deletion</h3>
         <p id="deleteMessage" class="text-gray-700 mb-6">Are you sure you want to delete this book? This action cannot be undone.</p>
         <div class="flex justify-end gap-3">
             <button 
                 onclick="closeModal()" 
-                class="px-4 py-2 bg-gray-200 text-text rounded-full font-medium"
+                class="px-5 py-2.5 bg-gray-100 text-text rounded-full font-medium hover:bg-gray-200 transition-all duration-200"
             >
                 Cancel
             </button>
@@ -107,7 +118,7 @@
                 @method('DELETE')
                 <button 
                     type="submit" 
-                    class="px-4 py-2 bg-red-500 text-white rounded-full font-medium"
+                    class="px-5 py-2.5 bg-red-500 text-white rounded-full font-medium hover:bg-red-600 transition-all duration-200 shadow-[0_3px_0_0_#b91c1c] hover:shadow-[0_1px_0_0_#b91c1c] hover:translate-y-0.5 active:translate-y-1 active:shadow-none"
                 >
                     Delete
                 </button>
@@ -121,12 +132,18 @@
 <script>
     function confirmDelete(id, title) {
         document.getElementById('deleteMessage').textContent = `Are you sure you want to delete "${title}"? This action cannot be undone.`;
-        document.getElementById('deleteForm').action = `/books/${id}`;
+        document.getElementById('deleteForm').action = `{{ route('book.delete', '') }}/${id}`;
         document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').children[0].classList.add('scale-100');
     }
     
     function closeModal() {
-        document.getElementById('deleteModal').classList.add('hidden');
+        const modal = document.getElementById('deleteModal');
+        modal.children[0].classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.children[0].classList.remove('scale-95');
+        }, 150);
     }
     
     // Close modal if user clicks outside of it
@@ -143,6 +160,31 @@
             closeModal();
         }
     });
+
+    // Handle search functionality with debounce
+    const searchInput = document.getElementById('search');
+    let debounceTimeout;
+    
+    searchInput.addEventListener('keyup', function(e) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            const searchValue = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                if (row.children.length <= 1) return; // Skip "No books found" row
+                
+                const titleCell = row.querySelector('td:nth-child(2)');
+                const authorCell = row.querySelector('td:nth-child(4)');
+                if (titleCell.textContent.toLowerCase().includes(searchValue) || 
+                    authorCell.textContent.toLowerCase().includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }, 300);
+    });
 </script>
 
 @if (session('success'))
@@ -155,11 +197,11 @@
         position: "right",
         stopOnFocus: true,
         style: {
-            background: "#A7D7C5", // Success - keep green color
+            background: "#02e728", // Success - keep green color
             color: "#4A4A4A",
-            borderRadius: "8px",
+            borderRadius: "12px",
             boxShadow: "0 4px 0 #86c0ae, 0 6px 15px rgba(0,0,0,0.1)",
-            padding: "12px 20px",
+            padding: "14px 22px",
             fontWeight: "500"
         },
         onClick: function(){}
@@ -174,13 +216,15 @@
         duration: 3000,
         close: true,
         gravity: "top",
+        position: "right",
+        style: {
+            background: "#EF4444", // Red color
             color: "#FFFFFF",
-            borderRadius: "8px",
+            borderRadius: "12px",
             boxShadow: "0 4px 0 #b91c1c, 0 6px 15px rgba(0,0,0,0.1)",
-            padding: "12px 20px",
+            padding: "14px 22px",
             fontWeight: "500"
         },
-        onClick: function(){}
     }).showToast();
 </script>
 @endif

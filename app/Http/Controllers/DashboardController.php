@@ -23,6 +23,7 @@ class DashboardController extends Controller
             $pendingRequests = Borrow::where('status', 'pending')->count();
             $borrowedCount = Borrow::where('status', 'borrowed')->count();
             $rejectedCount = Borrow::where('status', 'rejected')->count();
+            $returnedCount = Borrow::where('status', 'returned')->count();
             
             // Get counts for the statistics cards
             $totalBooks = Book::count();
@@ -33,19 +34,19 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
             
-            // // Get book categories for chart
-            // $categories = Book::select('category')
-            //     ->whereNotNull('category')
-            //     ->distinct()
-            //     ->pluck('category');
-            
-            // $categoryLabels = [];
-            // $categoryData = [];
-            
-            // foreach ($categories as $category) {
-            //     $categoryLabels[] = $category ?: 'Uncategorized';
-            //     $categoryData[] = Book::where('category', $category)->count();
-            // }
+            // Get book categories for chart
+$categories = Book::select('category')
+->whereNotNull('category')
+->distinct()
+->get();
+
+$categoryLabels = [];
+$categoryData = [];
+
+foreach ($categories as $category) {
+$categoryLabels[] = $category->category ?: 'Uncategorized';
+$categoryData[] = Book::where('category', $category->category)->count();
+}
             
             // If there are no categories or all books have null category,
             // show one category for all books
@@ -60,6 +61,7 @@ class DashboardController extends Controller
                 'pendingRequests',
                 'borrowedCount',
                 'rejectedCount',
+                'returnedCount',
                 'totalBooks',
                 'totalUsers',
                 'recentBooks',

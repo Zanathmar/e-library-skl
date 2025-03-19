@@ -120,6 +120,11 @@ class BookController extends Controller
     public function edit(Request $request)
     {
         $book = Book::where("slug", $request->slug)->first();
+        
+        if (!$book) {
+            return redirect()->route("book.index")->with("error", "Book not found");
+        }
+        
         return view("books.edit", compact("book"));
     }
     public function update(Request $request)
@@ -132,10 +137,10 @@ class BookController extends Controller
             "published_year" => "required|numeric|digits:4",
             "image" => "image|mimes:jpeg,png,jpg,gif,svg|max:2048",
         ],[
-            "title.required" => "JUDUL GAK OLEH KOSONG",
-            "title.unique" => "JUDUL SUDAH ADA",
-            "published_year.digits" => "TAHUN TERLALU PANJANG",
-            "image.max" => "UKURAN GAMBAR TERLALU BESAR",
+            "title.required" => "Title cannot be empty",
+            "title.unique" => "Title already exists",
+            "published_year.digits" => "Invalid year",
+            "image.max" => "Image is too large",
         ]);
 
         try {
@@ -192,6 +197,6 @@ class BookController extends Controller
             return redirect()->route("book.index")->with("success", "Book deleted successfully");
         }
 
-        return redirect()->back()->with("error","BOOk nornbook not found");
+        return redirect()->back()->with("error","Book not found");
     }
 }

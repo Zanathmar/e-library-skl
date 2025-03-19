@@ -15,7 +15,9 @@ class Book extends Model
         "page_count",
         "author",
         "published_year",
-        "image"
+        "image",
+        "status",
+        "category",
     ];
 
     public function borrows()
