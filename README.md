@@ -157,5 +157,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Contact
 
 For support or questions, please contact:
-- Email: support@bookoo-library.com
-- GitHub Issues: https://github.com/yourusername/bookoo/issues
+- Email: izzanathmar.m@gmail.com
