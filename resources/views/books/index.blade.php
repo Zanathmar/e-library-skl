@@ -16,14 +16,13 @@
         </a>
     </div>
 
-    <!-- Enhanced search bar with live search functionality -->
     <div class="mb-6 relative">
         <label for="search" class="sr-only">Search</label>
         <div class="relative">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
             </svg>
-            <input type="text" id="search" name="search" placeholder="Search by title or author..." class="pl-12 pr-14 py-3 bg-white w-full border-2 border-gray-200 text-text rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 transition-all shadow-sm">
+            <input type="text" id="search" name="search" placeholder="Search by title or author..." class="pl-12 pr-14 py-3.5 bg-white w-full border-2 border-gray-200 text-text rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 transition-all shadow-sm">
             <!-- Loading spinner (hidden by default) -->
             <div id="searchSpinner" class="hidden absolute right-14 top-1/2 transform -translate-y-1/2">
                 <svg class="animate-spin h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -39,8 +38,11 @@
             </button>
         </div>
         <!-- No results message (hidden by default) -->
-        <div id="noResultsMessage" class="hidden mt-3 p-3 bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-lg">
-            No books found matching "<span id="searchTerm"></span>". Try a different search term.
+        <div id="noResultsMessage" class="hidden mt-3 p-4 bg-yellow-50 border-2 border-yellow-200 text-yellow-700 rounded-lg flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            No books found matching "<span id="searchTerm" class="font-semibold"></span>". Try a different search term.
         </div>
     </div>
 
@@ -121,22 +123,23 @@
                 </tbody>
             </table>
         </div>
-        
-        <!-- Card View (Hidden by default) -->
+        {{-- Card view --}}
         <div id="cardView" class="hidden">
             <div id="bookCardContainer" class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @if ($books->count() === 0)
                 <div class="col-span-full p-6 text-center text-gray-500 font-medium">No books found</div>
                 @endif
                 @foreach ($books as $book)
-                    <div class="book-card bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-year="{{ $book->published_year }}">
-                        <div class="relative h-48">
-                            <img src="{{ asset("storage/book-images/" . $book->image) }}" alt="{{ $book->title }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
-                        </div>
-                        <div class="p-4">
+                    <div class="book-card flex flex-col h-full bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300" data-title="{{ $book->title }}" data-author="{{ $book->author }}" data-year="{{ $book->published_year }}">
+                        <div class="p-4 pb-2">
+                            <div class="relative h-52 mb-3">
+                                <img src="{{ asset("storage/book-images/" . $book->image) }}" alt="{{ $book->title }}" class="absolute inset-0 w-full h-full object-cover rounded-lg shadow-sm" loading="lazy">
+                            </div>
                             <h3 class="font-bold text-lg mb-1 text-text truncate">{{ $book->title }}</h3>
-                            <p class="text-gray-600 mb-2">{{ $book->author }}</p>
+                            <p class="text-gray-600 mb-1">{{ $book->author }}</p>
                             <p class="text-gray-500 text-sm mb-4">{{ $book->published_year }}</p>
+                        </div>
+                        <div class="mt-auto p-4 pt-2">
                             <div class="flex flex-wrap gap-2">
                                 <a href="{{ route('book.show', $book->slug) }}" class="px-3 py-1.5 bg-secondary border-2 border-black text-text rounded-full text-sm font-medium hover:bg-opacity-90 transition-all duration-200 shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none">Detail</a>
                                 <a href="{{ route('book.edit', $book->slug) }}" class="px-3 py-1.5 bg-primary border-2 border-black text-text rounded-full text-sm font-medium hover:bg-opacity-90 transition-all duration-200 shadow-[0_3px_0_0_#000000] hover:shadow-[0_1px_0_0_#000000] hover:translate-y-0.5 active:translate-y-1 active:shadow-none">Edit</a>
@@ -318,31 +321,56 @@
     });
 
     // Toggle between table and card view
-    function toggleView(view) {
-        const tableView = document.getElementById('tableView');
-        const cardView = document.getElementById('cardView');
-        const tableViewBtn = document.getElementById('tableViewBtn');
-        const cardViewBtn = document.getElementById('cardViewBtn');
-        
-        if (view === 'table') {
+function toggleView(view) {
+    const tableView = document.getElementById('tableView');
+    const cardView = document.getElementById('cardView');
+    const tableViewBtn = document.getElementById('tableViewBtn');
+    const cardViewBtn = document.getElementById('cardViewBtn');
+    
+    if (view === 'table') {
+        // Animate the transition
+        cardView.style.opacity = '0';
+        setTimeout(() => {
             tableView.classList.remove('hidden');
             cardView.classList.add('hidden');
-            tableViewBtn.classList.add('bg-primary', 'text-text');
-            tableViewBtn.classList.remove('text-gray-500');
-            cardViewBtn.classList.remove('bg-primary', 'text-text');
-            cardViewBtn.classList.add('text-gray-500');
-        } else {
+            
+            // Fade in the table view
+            setTimeout(() => {
+                tableView.style.opacity = '1';
+            }, 50);
+        }, 150);
+        
+        tableViewBtn.classList.add('bg-primary', 'text-text', 'border-black', 'shadow-sm');
+        tableViewBtn.classList.remove('text-gray-500', 'border-transparent');
+        cardViewBtn.classList.remove('bg-primary', 'text-text', 'border-black', 'shadow-sm');
+        cardViewBtn.classList.add('text-gray-500', 'border-transparent');
+    } else {
+        // Animate the transition
+        tableView.style.opacity = '0';
+        setTimeout(() => {
             tableView.classList.add('hidden');
             cardView.classList.remove('hidden');
-            tableViewBtn.classList.remove('bg-primary', 'text-text');
-            tableViewBtn.classList.add('text-gray-500');
-            cardViewBtn.classList.add('bg-primary', 'text-text');
-            cardViewBtn.classList.remove('text-gray-500');
-        }
+            
+            // Fade in the card view
+            setTimeout(() => {
+                cardView.style.opacity = '1';
+            }, 50);
+        }, 150);
         
-        currentView = view;
-        localStorage.setItem('bookView', view);
+        tableViewBtn.classList.remove('bg-primary', 'text-text', 'border-black', 'shadow-sm');
+        tableViewBtn.classList.add('text-gray-500', 'border-transparent');
+        cardViewBtn.classList.add('bg-primary', 'text-text', 'border-black', 'shadow-sm');
+        cardViewBtn.classList.remove('text-gray-500', 'border-transparent');
     }
+    // Initialize view opacity for animations
+document.getElementById('tableView').style.transition = 'opacity 150ms ease-in-out';
+document.getElementById('cardView').style.transition = 'opacity 150ms ease-in-out';
+document.getElementById('tableView').style.opacity = '1';
+document.getElementById('cardView').style.opacity = '1';
+    
+    currentView = view;
+    localStorage.setItem('bookView', view);
+}
 
     // Enhanced search functionality with debounce
     let debounceTimeout;
